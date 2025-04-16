@@ -1,0 +1,6 @@
+@ReStyleUp_HostAddress = http://localhost:5117
+
+GET {{ReStyleUp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
