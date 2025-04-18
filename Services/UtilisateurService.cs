@@ -1,84 +1,123 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReStyleUp.Data;
 using ReStyleUp.Models;
+using ReStyleUp.DTOs.Utilisateur;
 using ReStyleUp.Services.Interfaces;
+
 namespace ReStyleUp.Services
 {
     public class UtilisateurService : IUtilisateurService
     {
         private readonly ApplicationDbContext _context;
-        public UtilisateurService(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+
+        public UtilisateurService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public IEnumerable<Utilisateur> GetAllUtilisateurs()
+        public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs()
         {
-            return _context.Utilisateurs.Include(u => u.Email).ToList();
+            var utilisateurs = _context.Utilisateurs.Include(u => u.Email).ToList();
+            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
-        public Utilisateur GetUtilisateurById(int id)
+
+        public UtilisateurReadDto GetUtilisateurById(int id)
         {
-            return _context.Utilisateurs.Include(u => u.Email).FirstOrDefault(u => u.Id == id);
+            var utilisateur = _context.Utilisateurs.Include(u => u.Email).FirstOrDefault(u => u.Id == id);
+            return _mapper.Map<UtilisateurReadDto>(utilisateur);
         }
-        public IEnumerable<Utilisateur> GetUtilisateurByNom(string nom)
+
+        public IEnumerable<UtilisateurReadDto> GetUtilisateurByNom(string nom)
         {
-            return _context.Utilisateurs
-                           .Where(u => u.Nom == nom)
-                           .Include(u => u.Email)
-                           .ToList();
+            var utilisateurs = _context.Utilisateurs
+                                        .Where(u => u.Nom == nom)
+                                        .Include(u => u.Email)
+                                        .ToList();
+            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
-        public IEnumerable<Utilisateur> GetUtilisateurByEmail(string email)
+
+        public IEnumerable<UtilisateurReadDto> GetUtilisateurByEmail(string email)
         {
-            return _context.Utilisateurs
-                           .Where (u => u.Email == email)
-                           .Include(u => u.Email)
-                           .ToList();
+            var utilisateurs = _context.Utilisateurs
+                                        .Where(u => u.Email == email)
+                                        .Include(u => u.Email)
+                                        .ToList();
+            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
-        public IEnumerable<Utilisateur> GetUtilisateurByAdresse(string address)
+
+        public IEnumerable<UtilisateurReadDto> GetUtilisateurByAdresse(string address)
         {
-            return _context.Utilisateurs
-                           .Where(u => u.Adresse == address)
-                           .Include(u => u.Email)
-                           .ToList() ;
+            var utilisateurs = _context.Utilisateurs
+                                        .Where(u => u.Adresse == address)
+                                        .Include(u => u.Email)
+                                        .ToList();
+            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
-        public IEnumerable<Utilisateur> GetUtilisateurByTelephone(string telephone)
+
+        public IEnumerable<UtilisateurReadDto> GetUtilisateurByTelephone(string telephone)
         {
-            return _context.Utilisateurs
-                           .Where(u => u.Telephone == telephone)
-                           .Include(u => u.Email)
-                           .ToList() ;
+            var utilisateurs = _context.Utilisateurs
+                                        .Where(u => u.Telephone == telephone)
+                                        .Include(u => u.Email)
+                                        .ToList();
+            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
-        public IEnumerable<Utilisateur> GetUtilisateurByCommandeId(int commandeId)
+
+        public IEnumerable<UtilisateurReadDto> GetUtilisateurByCommandeId(int commandeId)
         {
-            return _context.Utilisateurs
-                           .Where(u => u.CommandeId == commandeId)
-                           .Include(u => u.Email)
-                           .ToList() ;
+            var commande = _context.Commandes
+                                   .Include(c => c.Utilisateur)
+                                   .FirstOrDefault(c => c.Id == commandeId);
+
+            if (commande == null || commande.Utilisateur == null)
+                return new List<UtilisateurReadDto>();
+
+            var utilisateur = new List<Utilisateur> { commande.Utilisateur };
+            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateur);
         }
-        public IEnumerable<Utilisateur> GetUtilisateurByAnnonceId(int annonceId)
+
+        public IEnumerable<UtilisateurReadDto> GetUtilisateurByAnnonceId(int annonceId)
         {
-            return _context.Utilisateurs
-                           .Where(u => u.AnnonceId == annonceId)
-                           .Include(u => u.Email)
-                           .ToList() ;
+            var annonce = _context.Annonces
+                                  .Include(a => a.Utilisateur)
+                                  .FirstOrDefault(a => a.Id == annonceId);
+
+            if (annonce == null || annonce.Utilisateur == null)
+                return new List<UtilisateurReadDto>();
+
+            var utilisateur = new List<Utilisateur> { annonce.Utilisateur };
+            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateur);
         }
-        public void AddUtilisateur(Utilisateur utilisateur)
+
+
+        public void AddUtilisateur(UtilisateurCreateDto utilisateurCreateDto)
         {
+            var utilisateur = _mapper.Map<Utilisateur>(utilisateurCreateDto);
             _context.Utilisateurs.Add(utilisateur);
-            _context.SaveChanges() ;
+            _context.SaveChanges();
         }
-        public void UpdateUtilisateur(Utilisateur utilisateur)
+
+        public void UpdateUtilisateur(int id, UtilisateurUpdateDto utilisateurUpdateDto)
         {
-            _context.Utilisateurs.Update(utilisateur);
-            _context.SaveChanges() ;
+            var utilisateur = _context.Utilisateurs.FirstOrDefault(u => u.Id == id);
+            if (utilisateur != null)
+            {
+                _mapper.Map(utilisateurUpdateDto, utilisateur);
+                _context.Utilisateurs.Update(utilisateur);
+                _context.SaveChanges();
+            }
         }
+
         public void DeleteUtilisateur(int id)
         {
             var utilisateur = _context.Utilisateurs.Find(id);
             if (utilisateur != null)
             {
                 _context.Utilisateurs.Remove(utilisateur);
-                _context.SaveChanges() ;
+                _context.SaveChanges();
             }
         }
     }

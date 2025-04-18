@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReStyleUp.Data;
 using ReStyleUp.Models;
+using ReStyleUp.DTOs.Annonce;
 using ReStyleUp.Services.Interfaces;
 
 namespace ReStyleUp.Services
@@ -8,57 +10,61 @@ namespace ReStyleUp.Services
     public class AnnonceService : IAnnonceService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AnnonceService(ApplicationDbContext context)
+        // Injection de IMapper pour AutoMapper
+        public AnnonceService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
-        }
-        public IEnumerable<Annonce> GetAllAnnonces()
-        {
-            return _context.Annonces.Include(a => a.Utilisateur).ToList();
+            _mapper = mapper;
         }
 
-        public Annonce GetAnnonceById(int id)
+        public IEnumerable<AnnonceReadDto> GetAllAnnonces()
         {
-            return _context.Annonces.Include(a => a.Utilisateur).FirstOrDefault(a => a.Id == id);
-        }
-        public IEnumerable<Annonce> GetAnnoncesByUserId(int userId)
-        {
-            return _context.Annonces
-                           .Where(a => a.UtilisateurId == userId)
-                           .Include(a => a.Utilisateur)
-                           .ToList();
+            var annonces = _context.Annonces.Include(a => a.Utilisateur).ToList();
+            // Mapping de la liste des annonces vers les DTOs de lecture
+            return _mapper.Map<IEnumerable<AnnonceReadDto>>(annonces);
         }
 
-        public IEnumerable<Annonce> GetAnnonceByUserName(string userName)
+        public AnnonceReadDto GetAnnonceById(int id)
         {
-            return _context.Annonces
-                           .Where(a => a.Utilisateur.Nom == userName)
-                           .Include(a => a.Utilisateur)
-                           .ToList();
-        }
-        public IEnumerable<Annonce> GetAnnonceByDate(DateTime date)
-        {
-            return _context.Annonces
-                            .Where(a => a.DatePublication == date)
-                            .Include(a => a.DatePublication)
-                            .ToList();
+            var annonce = _context.Annonces.Include(a => a.Utilisateur).FirstOrDefault(a => a.Id == id);
+            // Mapping de l'annonce vers le DTO de lecture
+            return _mapper.Map<AnnonceReadDto>(annonce);
         }
 
-        public void AddAnnonce(Annonce annonce)
+        public IEnumerable<AnnonceReadDto> GetAnnoncesByUtilisateurId(int userId)
         {
+            var annonces = _context.Annonces
+                                    .Where(a => a.UtilisateurId == userId)
+                                    .Include(a => a.Utilisateur)
+                                    .ToList();
+            // Mapping des annonces vers les DTOs de lecture
+            return _mapper.Map<IEnumerable<AnnonceReadDto>>(annonces);
+        }
+
+        public void AddAnnonce(AnnonceCreateDto annonceCreateDto)
+        {
+            // Mapping du DTO de création vers l'entité Annonce
+            var annonce = _mapper.Map<Annonce>(annonceCreateDto);
             _context.Annonces.Add(annonce);
             _context.SaveChanges();
         }
 
-        public void UpdateAnnonce(Annonce annonce)
+        public void UpdateAnnonce(int id, AnnonceUpdateDto annonceUpdateDto)
         {
-            _context.Annonces.Update(annonce);
-            _context.SaveChanges();
+            var annonce = _context.Annonces.FirstOrDefault(a => a.Id == id);
+            if (annonce != null)
+            {
+                // Mapping du DTO de mise à jour vers l'entité Annonce
+                _mapper.Map(annonceUpdateDto, annonce);
+                _context.Annonces.Update(annonce);
+                _context.SaveChanges();
+            }
         }
 
         public void DeleteAnnonce(int id)
-        {   
+        {
             var annonce = _context.Annonces.Find(id);
             if (annonce != null)
             {

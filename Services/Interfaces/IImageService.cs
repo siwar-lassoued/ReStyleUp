@@ -1,14 +1,14 @@
-﻿using ReStyleUp.Models;
+﻿using ReStyleUp.DTOs.Image;
+using ReStyleUp.Models;
+
 namespace ReStyleUp.Services.Interfaces
 {
     public interface IImageService
     {
-        public IEnumerable<Image> GetAllImages();
-        public Image GetImageById(int id);
-        public IEnumerable<Image> GetImageByUrl(string url);
-        public IEnumerable<Image> GetImageByAnnonceId(int annonceId);
-        public void AddImage(Image image);
-        public void UpdateImage(Image image);
+        public IEnumerable<ImageReadDto> GetAllImages();
+        public ImageReadDto GetImageById(int id);
+        public void AddImage(ImageCreateDto image);
+        public void UpdateImage(int id, ImageUpdateDto imageDto);
         public void DeleteImage(int id);
     }
 }

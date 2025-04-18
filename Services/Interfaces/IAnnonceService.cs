@@ -1,15 +1,15 @@
-﻿using ReStyleUp.Models;
+﻿using ReStyleUp.DTOs.Annonce;
+using ReStyleUp.Models;
+
 namespace ReStyleUp.Services.Interfaces
 {
     public interface IAnnonceService
     {
-        IEnumerable<Annonce> GetAllAnnonces();
-        Annonce GetAnnonceById(int id);
-        IEnumerable<Annonce> GetAnnoncesByUserId(int userId);
-        IEnumerable<Annonce> GetAnnonceByUserName(string userName);
-        IEnumerable<Annonce> GetAnnonceByDate(DateTime date);
-        void AddAnnonce(Annonce annonce);
-        void UpdateAnnonce(Annonce annonce);
-        void DeleteAnnonce(int id);
+        public IEnumerable<AnnonceReadDto> GetAllAnnonces();
+        public AnnonceReadDto GetAnnonceById(int id);
+        public IEnumerable<AnnonceReadDto> GetAnnoncesByUtilisateurId(int utilisateurId);
+        public void AddAnnonce(AnnonceCreateDto annonce);
+        public void UpdateAnnonce(int id, AnnonceUpdateDto annonceUpdateDto);
+        public void DeleteAnnonce(int id);
     }
 }

@@ -2,42 +2,62 @@
 using ReStyleUp.Data;
 using ReStyleUp.Models;
 using ReStyleUp.Services.Interfaces;
+using ReStyleUp.DTOs.Commande;
+using AutoMapper;
 
 namespace ReStyleUp.Services
 {
     public class CommandeService : ICommandeService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CommandeService(ApplicationDbContext context)
+        public CommandeService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-        public IEnumerable<Commande> GetAllCommandes()
+
+        public IEnumerable<CommandeReadDto> GetAllCommandes()
         {
-            return _context.Commandes.Include(c => c.Utilisateur ).ToList();
+            var commandes = _context.Commandes.Include(c => c.Utilisateur).ToList();
+            return _mapper.Map<IEnumerable<CommandeReadDto>>(commandes);
         }
-        public Commande GetCommandeById(int id)
+
+        public CommandeReadDto GetCommandeById(int id)
         {
-            return _context.Commandes.Include(c => c.Utilisateur).FirstOrDefault(c => c.Id == id);
+            var commande = _context.Commandes.Include(c => c.Utilisateur).FirstOrDefault(c => c.Id == id);
+            return _mapper.Map<CommandeReadDto>(commande);
         }
-        public IEnumerable<Commande> GetCommandeByUserName(string userName)
+
+        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(int utilisateurId)
         {
-            return _context.Commandes
-                           .Where(c => c.Utilisateur.Nom == userName)
-                           .Include(c => c.Utilisateur)
-                           .ToList();
+            var commandes = _context.Commandes
+                                    .Where(c => c.UtilisateurId == utilisateurId) // Filtrer par UtilisateurId
+                                    .Include(c => c.Utilisateur)  // Inclure les informations de l'utilisateur
+                                    .ToList();
+
+            return _mapper.Map<IEnumerable<CommandeReadDto>>(commandes);
         }
-        public void AddCommande(Commande commande)
+
+        public void AddCommande(CommandeCreateDto commandeDto)
         {
+            var commande = _mapper.Map<Commande>(commandeDto);
             _context.Commandes.Add(commande);
             _context.SaveChanges();
         }
-        public void UpdateCommande(Commande commande)
+
+        public void UpdateCommande(int id, CommandeUpdateDto commandeDto)
         {
-            _context.Commandes.Update(commande);
-            _context.SaveChanges();
+            var commande = _context.Commandes.Find(id);
+            if (commande != null)
+            {
+                _mapper.Map(commandeDto, commande);
+                _context.Commandes.Update(commande);
+                _context.SaveChanges();
+            }
         }
+
         public void DeleteCommande(int id)
         {
             var commande = _context.Commandes.Find(id);
@@ -46,8 +66,6 @@ namespace ReStyleUp.Services
                 _context.Commandes.Remove(commande);
                 _context.SaveChanges();
             }
-            
         }
-
     }
 }

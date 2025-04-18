@@ -1,49 +1,61 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ReStyleUp.Data;
-using ReStyleUp.Services.Interfaces;
+using ReStyleUp.DTOs.Article;
 using ReStyleUp.Models;
+using ReStyleUp.Services.Interfaces;
 
 namespace ReStyleUp.Services
 {
     public class ArticleService : IArticleService
-
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ArticleService(ApplicationDbContext context)
+        public ArticleService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
-
+            _mapper = mapper;
         }
 
-        public IEnumerable<Article> GetAllArticles()
+        public IEnumerable<ArticleReadDto> GetAllArticles()
         {
-            return _context.Articles.Include(a => a.Prix).ToList();
+            var articles = _context.Articles.Include(a => a.Prix).ToList();
+            return _mapper.Map<IEnumerable<ArticleReadDto>>(articles);
         }
 
-        public Article GetArticleById(int id)
+        public ArticleReadDto GetArticleById(int id)
         {
-            return _context.Articles.Include(a =>a.Prix).FirstOrDefault(a => a.Id == id);
+            var article = _context.Articles.Include(a => a.Prix).FirstOrDefault(a => a.Id == id);
+            return article == null ? null : _mapper.Map<ArticleReadDto>(article);
         }
 
-        public IEnumerable<Article> GetArticleByName(string name)
+        public IEnumerable<ArticleReadDto> GetArticlesByAnnonceId(int annonceId)
         {
-            return _context.Articles
-                           .Where(a => a.Nom == name)
-                           .Include(a => a.Prix)
-                           .ToList();
+            var articles = _context.Articles
+                                   .Where(a => a.AnnonceId == annonceId)  
+                                   .Include(a => a.Prix)                  
+                                   .ToList();
+
+            return _mapper.Map<IEnumerable<ArticleReadDto>>(articles);
         }
 
-        public void AddArticle (Article article)
+        public void AddArticle(ArticleCreateDto articleCreateDto)
         {
+            var article = _mapper.Map<Article>(articleCreateDto);
             _context.Articles.Add(article);
             _context.SaveChanges();
         }
 
-        public void UpdateArticle(Article article)
+        public void UpdateArticle(int id, ArticleUpdateDto articleUpdateDto)
         {
-            _context.Articles.Update(article);
-            _context.SaveChanges();
+            var article = _context.Articles.FirstOrDefault(a => a.Id == id);
+            if (article != null)
+            {
+                _mapper.Map(articleUpdateDto, article);
+                _context.Articles.Update(article);
+                _context.SaveChanges();
+            }
         }
 
         public void DeleteArticle(int id)
@@ -54,7 +66,6 @@ namespace ReStyleUp.Services
                 _context.Articles.Remove(article);
                 _context.SaveChanges();
             }
-
         }
     }
 }

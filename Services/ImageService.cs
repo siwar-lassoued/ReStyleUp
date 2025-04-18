@@ -2,48 +2,70 @@
 using ReStyleUp.Models;
 using ReStyleUp.Data;
 using ReStyleUp.Services.Interfaces;
+using ReStyleUp.DTOs.Image;
+using AutoMapper;
 
 namespace ReStyleUp.Services
 {
     public class ImageService : IImageService
     {
         private readonly ApplicationDbContext _context;
-        public ImageService(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+
+        public ImageService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-        public IEnumerable<Image> GetAllImages()
+
+        public IEnumerable<ImageReadDto> GetAllImages()
         {
-            return _context.Images.Include(i => i.Id).ToList();
+            var images = _context.Images.Include(i => i.Annonce).ToList();
+            return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
-        public Image GetImageById(int id)
+
+        public ImageReadDto GetImageById(int id)
         {
-            return _context.Images.Include(i => i.Id).FirstOrDefault(i => i.Id == id);
+            var image = _context.Images.Include(i => i.Annonce).FirstOrDefault(i => i.Id == id);
+            return _mapper.Map<ImageReadDto>(image);
         }
-        public IEnumerable<Image> GetImageByUrl(string url)
+
+        public IEnumerable<ImageReadDto> GetImageByUrl(string url)
         {
-            return _context.Images
-                           .Where(i => i.Url == url)
-                           .Include(i => i.Id)
-                           .ToList();
+            var images = _context.Images
+                                 .Where(i => i.Url == url)
+                                 .Include(i => i.Annonce)
+                                 .ToList();
+            return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
-        public IEnumerable<Image> GetImageByAnnonceId(int annonceId)
+
+        public IEnumerable<ImageReadDto> GetImageByAnnonceId(int annonceId)
         {
-            return _context.Images
-                           .Where(i => i.AnnonceId == annonceId)
-                           .Include(i => i.Id)
-                           .ToList();
+            var images = _context.Images
+                                 .Where(i => i.AnnonceId == annonceId)
+                                 .Include(i => i.Annonce)
+                                 .ToList();
+            return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
-        public void AddImage(Image image)
+
+        public void AddImage(ImageCreateDto imageDto)
         {
+            var image = _mapper.Map<Image>(imageDto);
             _context.Images.Add(image);
             _context.SaveChanges();
         }
-        public void UpdateImage(Image image)
+
+        public void UpdateImage(int id, ImageUpdateDto imageDto)
         {
-            _context.Images.Update(image);
-            _context.SaveChanges();
+            var image = _context.Images.Find(id);
+            if (image != null)
+            {
+                _mapper.Map(imageDto, image);
+                _context.Images.Update(image);
+                _context.SaveChanges();
+            }
         }
+
         public void DeleteImage(int id)
         {
             var image = _context.Images.Find(id);
