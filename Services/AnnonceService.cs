@@ -43,13 +43,21 @@ namespace ReStyleUp.Services
             return _mapper.Map<IEnumerable<AnnonceReadDto>>(annonces);
         }
 
-        public void AddAnnonce(AnnonceCreateDto annonceCreateDto)
+        public int AddAnnonce(AnnonceCreateDto annonceCreateDto)
         {
-            // Mapping du DTO de création vers l'entité Annonce
+            // Vérifier que l'utilisateur existe
+            var userExists = _context.Utilisateurs.Any(u => u.Id == annonceCreateDto.UtilisateurId);
+            if (!userExists)
+            {
+                throw new ArgumentException($"L'utilisateur avec l'ID {annonceCreateDto.UtilisateurId} n'existe pas");
+            }
+
             var annonce = _mapper.Map<Annonce>(annonceCreateDto);
             _context.Annonces.Add(annonce);
             _context.SaveChanges();
+            return annonce.Id;
         }
+
 
         public void UpdateAnnonce(int id, AnnonceUpdateDto annonceUpdateDto)
         {

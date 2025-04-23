@@ -50,7 +50,22 @@ namespace ReStyleUp.Services
 
         public void AddImage(ImageCreateDto imageDto)
         {
-            var image = _mapper.Map<Image>(imageDto);
+            // Si un AnnonceId est spécifié, vérifiez qu'il existe
+            if (imageDto.AnnonceId.HasValue)
+            {
+                var annonceExists = _context.Annonces.Any(a => a.Id == imageDto.AnnonceId.Value);
+                if (!annonceExists)
+                {
+                    throw new ArgumentException("L'annonce spécifiée n'existe pas");
+                }
+            }
+
+            var image = new Image
+            {
+                Url = imageDto.Url,
+                AnnonceId = imageDto.AnnonceId
+            };
+
             _context.Images.Add(image);
             _context.SaveChanges();
         }

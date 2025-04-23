@@ -20,13 +20,13 @@ namespace ReStyleUp.Services
 
         public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs()
         {
-            var utilisateurs = _context.Utilisateurs.Include(u => u.Email).ToList();
+            var utilisateurs = _context.Utilisateurs.ToList();
             return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
 
         public UtilisateurReadDto GetUtilisateurById(int id)
         {
-            var utilisateur = _context.Utilisateurs.Include(u => u.Email).FirstOrDefault(u => u.Id == id);
+            var utilisateur = _context.Utilisateurs.FirstOrDefault(u => u.Id == id);
             return _mapper.Map<UtilisateurReadDto>(utilisateur);
         }
 
@@ -34,7 +34,6 @@ namespace ReStyleUp.Services
         {
             var utilisateurs = _context.Utilisateurs
                                         .Where(u => u.Nom == nom)
-                                        .Include(u => u.Email)
                                         .ToList();
             return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
@@ -43,7 +42,6 @@ namespace ReStyleUp.Services
         {
             var utilisateurs = _context.Utilisateurs
                                         .Where(u => u.Email == email)
-                                        .Include(u => u.Email)
                                         .ToList();
             return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
@@ -52,7 +50,6 @@ namespace ReStyleUp.Services
         {
             var utilisateurs = _context.Utilisateurs
                                         .Where(u => u.Adresse == address)
-                                        .Include(u => u.Email)
                                         .ToList();
             return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
@@ -61,7 +58,6 @@ namespace ReStyleUp.Services
         {
             var utilisateurs = _context.Utilisateurs
                                         .Where(u => u.Telephone == telephone)
-                                        .Include(u => u.Email)
                                         .ToList();
             return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
         }
@@ -93,12 +89,30 @@ namespace ReStyleUp.Services
         }
 
 
-        public void AddUtilisateur(UtilisateurCreateDto utilisateurCreateDto)
+        public UtilisateurReadDto AddUtilisateur(UtilisateurCreateDto dto)
         {
-            var utilisateur = _mapper.Map<Utilisateur>(utilisateurCreateDto);
+            var utilisateur = new Utilisateur
+            {
+                Nom = dto.Nom,
+                Email = dto.Email,
+                MotDePasse = dto.MotDePasse,
+                Adresse = dto.Adresse,
+                Telephone = dto.Telephone
+            };
+
             _context.Utilisateurs.Add(utilisateur);
             _context.SaveChanges();
+
+            return new UtilisateurReadDto
+            {
+                Id = utilisateur.Id,
+                Nom = utilisateur.Nom,
+                Email = utilisateur.Email,
+                Adresse = utilisateur.Adresse,
+                Telephone = utilisateur.Telephone
+            };
         }
+
 
         public void UpdateUtilisateur(int id, UtilisateurUpdateDto utilisateurUpdateDto)
         {

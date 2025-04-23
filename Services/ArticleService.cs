@@ -20,13 +20,13 @@ namespace ReStyleUp.Services
 
         public IEnumerable<ArticleReadDto> GetAllArticles()
         {
-            var articles = _context.Articles.Include(a => a.Prix).ToList();
+            var articles = _context.Articles.ToList();
             return _mapper.Map<IEnumerable<ArticleReadDto>>(articles);
         }
 
         public ArticleReadDto GetArticleById(int id)
         {
-            var article = _context.Articles.Include(a => a.Prix).FirstOrDefault(a => a.Id == id);
+            var article = _context.Articles.FirstOrDefault(a => a.Id == id);
             return article == null ? null : _mapper.Map<ArticleReadDto>(article);
         }
 
@@ -34,7 +34,6 @@ namespace ReStyleUp.Services
         {
             var articles = _context.Articles
                                    .Where(a => a.AnnonceId == annonceId)  
-                                   .Include(a => a.Prix)                  
                                    .ToList();
 
             return _mapper.Map<IEnumerable<ArticleReadDto>>(articles);

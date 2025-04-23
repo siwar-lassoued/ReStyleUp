@@ -13,7 +13,7 @@ namespace ReStyleUp.Services.Interfaces
         public IEnumerable<UtilisateurReadDto> GetUtilisateurByTelephone(string telephone);
         public IEnumerable<UtilisateurReadDto> GetUtilisateurByCommandeId(int commandeId);
         public IEnumerable<UtilisateurReadDto> GetUtilisateurByAnnonceId(int annonceId);
-        public void AddUtilisateur(UtilisateurCreateDto utilisateur);
+        UtilisateurReadDto AddUtilisateur(UtilisateurCreateDto utilisateurCreateDto);
         void UpdateUtilisateur(int id, UtilisateurUpdateDto utilisateur);
         public void DeleteUtilisateur(int id);
     }
