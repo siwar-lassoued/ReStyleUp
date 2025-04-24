@@ -10,6 +10,7 @@ import os
 # --------------------------
 # Configuration
 # --------------------------
+
 URL = "https://www.zen.com.tn/fr/tn/162-chaussures-homme"
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -18,6 +19,7 @@ CSV_FILE_PATH = os.path.join(OUTPUT_DIR, "zen_shoes_homme.csv")
 # --------------------------
 # Setup Selenium WebDriver
 # --------------------------
+
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
@@ -27,6 +29,7 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 # --------------------------
 # Load and Scroll Page
 # --------------------------
+
 driver.get(URL)
 time.sleep(3)
 
@@ -47,6 +50,7 @@ driver.quit()
 # --------------------------
 # Scrape Product Information
 # --------------------------
+
 products = soup.select("div.row.ng-star-inserted > div")
 print(f"[INFO] Found {len(products)} products.")
 
@@ -87,5 +91,4 @@ with open(CSV_FILE_PATH, mode="w", newline="", encoding="utf-8") as file:
             color_image_urls, main_image_url, product_link
         ])
         print(f"[SAVED] {name} - {price}")
-
 print(f"[DONE] Data saved to: {CSV_FILE_PATH}")
