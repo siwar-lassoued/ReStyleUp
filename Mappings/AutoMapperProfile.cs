@@ -28,16 +28,17 @@ namespace ReStyleUp.Mappings
 
 
 
-            // Mappage entre Article et ArticleReadDto
             CreateMap<Article, ArticleReadDto>()
-                .ForMember(dest => dest.Etat, opt => opt.MapFrom(src => src.Etat.ToString()))  
-                .ForMember(dest => dest.AnnonceTitre, opt => opt.MapFrom(src => src.Annonce.Titre));  
+     .ForMember(dest => dest.Categorie, opt => opt.MapFrom(src => src.Categorie.ToString()))
+     .ForMember(dest => dest.Etat, opt => opt.MapFrom(src => src.Etat.ToString()))
+     .ForMember(dest => dest.AnnonceTitre, opt => opt.MapFrom(src => src.Annonce.Titre));
 
-            // Mappage entre ArticleCreateDto et Article
-            CreateMap<ArticleCreateDto, Article>();
+            CreateMap<ArticleCreateDto, Article>()
+                .ForMember(dest => dest.Categorie, opt => opt.MapFrom(src => Enum.Parse<CategorieArticle>(src.Categorie)));
 
-            // Mappage entre ArticleUpdateDto et Article
-            CreateMap<ArticleUpdateDto, Article>();
+            CreateMap<ArticleUpdateDto, Article>()
+                .ForMember(dest => dest.Categorie, opt => opt.MapFrom(src => Enum.Parse<CategorieArticle>(src.Categorie)));
+
 
 
 

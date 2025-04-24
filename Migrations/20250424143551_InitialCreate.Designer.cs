@@ -11,7 +11,7 @@ using ReStyleUp.Data;
 namespace ReStyleUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250423143050_InitialCreate")]
+    [Migration("20250424143551_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -74,6 +74,9 @@ namespace ReStyleUp.Migrations
                     b.Property<int>("AnnonceId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Categorie")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -90,7 +93,8 @@ namespace ReStyleUp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnnonceId");
+                    b.HasIndex("AnnonceId")
+                        .IsUnique();
 
                     b.ToTable("Articles");
                 });
@@ -213,8 +217,8 @@ namespace ReStyleUp.Migrations
             modelBuilder.Entity("ReStyleUp.Models.Article", b =>
                 {
                     b.HasOne("ReStyleUp.Models.Annonce", "Annonce")
-                        .WithMany("Articles")
-                        .HasForeignKey("AnnonceId")
+                        .WithOne("Articles")
+                        .HasForeignKey("ReStyleUp.Models.Article", "AnnonceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -258,7 +262,8 @@ namespace ReStyleUp.Migrations
 
             modelBuilder.Entity("ReStyleUp.Models.Annonce", b =>
                 {
-                    b.Navigation("Articles");
+                    b.Navigation("Articles")
+                        .IsRequired();
 
                     b.Navigation("Images");
                 });

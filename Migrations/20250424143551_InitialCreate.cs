@@ -37,6 +37,7 @@ namespace ReStyleUp.Migrations
                     Nom = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Prix = table.Column<float>(type: "REAL", nullable: false),
+                    Categorie = table.Column<int>(type: "INTEGER", nullable: false),
                     Etat = table.Column<int>(type: "INTEGER", nullable: false),
                     AnnonceId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -147,7 +148,8 @@ namespace ReStyleUp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_AnnonceId",
                 table: "Articles",
-                column: "AnnonceId");
+                column: "AnnonceId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Commandes_UtilisateurId",
