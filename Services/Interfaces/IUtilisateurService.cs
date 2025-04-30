@@ -1,10 +1,12 @@
-﻿using ReStyleUp.DTOs.Utilisateur;
+﻿using Microsoft.AspNetCore.Identity;
+using ReStyleUp.DTOs.Utilisateur;
 using ReStyleUp.Models;
 
 namespace ReStyleUp.Services.Interfaces
 {
     public interface IUtilisateurService
     {
+        IEnumerable<IdentityUser> GetUsersList();
         public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs();
         public UtilisateurReadDto GetUtilisateurById(int id);
         public IEnumerable<UtilisateurReadDto> GetUtilisateurByNom(string nom);

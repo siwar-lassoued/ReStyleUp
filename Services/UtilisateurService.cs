@@ -4,6 +4,7 @@ using ReStyleUp.Data;
 using ReStyleUp.Models;
 using ReStyleUp.DTOs.Utilisateur;
 using ReStyleUp.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace ReStyleUp.Services
 {
@@ -11,13 +12,21 @@ namespace ReStyleUp.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UtilisateurService(ApplicationDbContext context, IMapper mapper)
+
+        public UtilisateurService(ApplicationDbContext context, IMapper mapper, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
+
         }
 
+        public IEnumerable<IdentityUser> GetUsersList()
+        {
+            return _userManager.Users.ToList();
+        }
         public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs()
         {
             var utilisateurs = _context.Utilisateurs.ToList();
