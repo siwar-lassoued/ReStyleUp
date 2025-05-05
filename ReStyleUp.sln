@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReStyleUp", "ReStyleUp.csproj", "{4A7BB124-3972-4AB6-83BB-6A6BE0A73F02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReStyleUp.Tests", "..\ReStyleUp.Tests\ReStyleUp.Tests.csproj", "{AB1B6A5E-0D7A-4103-9085-8FEAF515C8E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4A7BB124-3972-4AB6-83BB-6A6BE0A73F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A7BB124-3972-4AB6-83BB-6A6BE0A73F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A7BB124-3972-4AB6-83BB-6A6BE0A73F02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1B6A5E-0D7A-4103-9085-8FEAF515C8E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1B6A5E-0D7A-4103-9085-8FEAF515C8E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1B6A5E-0D7A-4103-9085-8FEAF515C8E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1B6A5E-0D7A-4103-9085-8FEAF515C8E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

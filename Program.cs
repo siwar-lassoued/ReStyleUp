@@ -26,6 +26,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 // Configuration de JWT
+var jwtSection = builder.Configuration.GetSection("JwtBearerTokenSettings");
+builder.Services.Configure<JwtBearerTokenSettings>(jwtSection);
 var jwtSettings = builder.Configuration.GetSection("JwtBearerTokenSettings").Get<JwtBearerTokenSettings>();
 var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
 
