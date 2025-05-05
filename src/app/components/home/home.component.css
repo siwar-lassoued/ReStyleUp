@@ -1,0 +1,158 @@
+.annonces-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background-color: #f6f6f6;
+  }
+  
+  .annonce-card {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+    width: 240px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .annonce-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .annonce-image {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+  }
+  
+  .annonce-content {
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .annonce-titre {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .annonce-prix {
+    font-weight: bold;
+    color: #4a90e2;
+  }
+  /* General */
+body {
+  font-family: 'Arial', sans-serif;
+}
+
+/* Card Style */
+.product-card {
+  width: 250px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: 20px;
+  background: #fff;
+  text-align: center;
+}
+
+.product-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.product-title {
+  font-size: 18px;
+  margin: 10px 0 5px;
+}
+
+.product-price {
+  color: #4CAF50;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.btn-detail {
+  padding: 10px 20px;
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  transition: 0.3s ease;
+}
+
+.btn-detail:hover {
+  background: #45a049;
+}
+
+/* Modal Style */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  padding-top: 80px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  width: 80%;
+  max-width: 800px;
+  border-radius: 15px;
+  position: relative;
+}
+
+.close {
+  color: #aaa;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-body {
+  display: flex;
+  gap: 20px;
+}
+
+.modal-img {
+  width: 50%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.modal-info {
+  flex: 1;
+}
+
+.modal-info h2 {
+  margin-top: 0;
+}
+
+.btn-buy {
+  padding: 10px 25px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.btn-buy:hover {
+  background: #0b7dda;
+}

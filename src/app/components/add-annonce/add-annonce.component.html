@@ -1,0 +1,26 @@
+<div class="form-container">
+  <h2>Ajouter une Annonce</h2>
+  <form (ngSubmit)="onSubmit()" #annonceForm="ngForm">
+    <div class="form-group">
+      <label>Titre</label>
+      <input type="text" name="titre" [(ngModel)]="annonce.titre" required placeholder="Titre de l'annonce" />
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description" [(ngModel)]="annonce.description" required placeholder="Décrivez votre annonce"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Prix</label>
+      <input type="number" name="prix" [(ngModel)]="annonce.prix" required placeholder="Prix en TND" />
+    </div>
+
+    <div class="form-group">
+      <label>Image (URL)</label>
+      <input type="url" name="image" [(ngModel)]="annonce.imagesUrls" placeholder="Lien de l'image" />
+    </div>
+
+    <button type="submit">Publier</button>
+  </form>
+</div>

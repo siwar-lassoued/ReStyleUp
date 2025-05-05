@@ -1,0 +1,12 @@
+<div class="hero">
+    <h1>Comment ça marche ?</h1>
+    <p>Vends, achète et donne une seconde vie à tes vêtements</p>
+  </div>
+  
+  <div class="section">
+    <div class="step" *ngFor="let etape of etapes">
+      <h2>{{ etape.titre }}</h2>
+      <p>{{ etape.description }}</p>
+    </div>
+  </div>
+  

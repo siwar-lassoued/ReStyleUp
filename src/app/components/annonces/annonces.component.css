@@ -1,0 +1,30 @@
+.product-card {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.product-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.product-price {
+  font-size: 0.9rem;
+  color: #555;
+}
