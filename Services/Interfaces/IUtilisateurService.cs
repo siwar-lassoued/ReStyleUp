@@ -6,9 +6,9 @@ namespace ReStyleUp.Services.Interfaces
 {
     public interface IUtilisateurService
     {
-        IEnumerable<IdentityUser> GetUsersList();
-        public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs();
-        public UtilisateurReadDto GetUtilisateurById(int id);
+       public IEnumerable<IdentityUser> GetUsersList();
+/*        public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs();
+*/        public UtilisateurReadDto GetUtilisateurById(int id);
         public IEnumerable<UtilisateurReadDto> GetUtilisateurByNom(string nom);
         public IEnumerable<UtilisateurReadDto> GetUtilisateurByEmail(string email);
         public IEnumerable<UtilisateurReadDto> GetUtilisateurByAdresse(string address);

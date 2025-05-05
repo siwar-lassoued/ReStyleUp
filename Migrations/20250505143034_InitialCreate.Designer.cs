@@ -11,7 +11,7 @@ using ReStyleUp.Data;
 namespace ReStyleUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250430133406_InitialCreate")]
+    [Migration("20250505143034_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

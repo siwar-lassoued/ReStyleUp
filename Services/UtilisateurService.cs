@@ -27,15 +27,15 @@ namespace ReStyleUp.Services
         {
             return _userManager.Users.ToList();
         }
-        public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs()
-        {
-            var utilisateurs = _context.Utilisateurs.ToList();
-            return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
-        }
+        //public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs()
+        //{
+        //    var utilisateurs = _context.Utilisateurs.ToList();
+        //    return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateurs);
+        //}
 
         public UtilisateurReadDto GetUtilisateurById(int id)
         {
-            var utilisateur = _context.Utilisateurs.FirstOrDefault(u => u.Id == id);
+            var utilisateur = _context.Users.Find(id);
             return _mapper.Map<UtilisateurReadDto>(utilisateur);
         }
 
@@ -114,7 +114,6 @@ namespace ReStyleUp.Services
 
             return new UtilisateurReadDto
             {
-                Id = utilisateur.Id,
                 Nom = utilisateur.Nom,
                 Email = utilisateur.Email,
                 Adresse = utilisateur.Adresse,
@@ -125,7 +124,7 @@ namespace ReStyleUp.Services
 
         public void UpdateUtilisateur(int id, UtilisateurUpdateDto utilisateurUpdateDto)
         {
-            var utilisateur = _context.Utilisateurs.FirstOrDefault(u => u.Id == id);
+            var utilisateur = _context.Utilisateurs.Find(id);
             if (utilisateur != null)
             {
                 _mapper.Map(utilisateurUpdateDto, utilisateur);

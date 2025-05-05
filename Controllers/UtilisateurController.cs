@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using ReStyleUp.DTOs.Utilisateur;
 using ReStyleUp.Services.Interfaces;
 
@@ -17,9 +18,9 @@ namespace ReStyleUp.Controllers
 
         // GET: api/Utilisateur
         [HttpGet]
-        public ActionResult<IEnumerable<UtilisateurReadDto>> GetAllUtilisateurs()
+        public ActionResult<IEnumerable<IdentityUser>> GetAllUtilisateurs()
         {
-            var utilisateurs = _utilisateurService.GetAllUtilisateurs();
+            var utilisateurs = _utilisateurService.GetUsersList();
             return Ok(utilisateurs);
         }
 
