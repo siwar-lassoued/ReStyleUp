@@ -95,8 +95,17 @@ builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
 
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy => policy.WithOrigins("http://localhost:4200") // adresse du frontend
+                         .AllowAnyMethod()
+                         .AllowAnyHeader());
+});
 
 var app = builder.Build();
+
+app.UseCors("AllowAngularApp");
 
 app.UseAuthentication(); // Authentification d'abord
 app.UseAuthorization();  // Ensuite l'autorisation
