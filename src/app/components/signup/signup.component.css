@@ -2,12 +2,12 @@
 body {
     font-family: 'Arial', sans-serif;
     background: linear-gradient(to right, white, #f0b9c5);
-    margin-top: 100px;
+    margin-top: -1px;
     padding: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 130vh;
     overflow: hidden;
   }
   

@@ -17,7 +17,8 @@ const routes: Routes = [
   { path: 'accessories', component: AccessoriesComponent },
   { path: 'home', component: HomeComponent },
   {path : 'login' , component : LoginComponent},
-  {path : 'signup' , component : SignupComponent},
+  {path: 'signup',
+  loadComponent: () => import('./components/signup/signup.component').then(m => m.SignupComponent)},  
   { path: 'comment-ca-marche', component: CommentCaMarcheComponent },
   { path: 'annonce', component: AddAnnonceComponent },
   {path: 'annonces', component: AnnoncesComponent} // Redirige vers la page d'accueil pour toute autre route non définie

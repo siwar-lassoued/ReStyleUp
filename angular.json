@@ -87,7 +87,8 @@
               "buildTarget": "RestyleUp:build:production"
             },
             "development": {
-              "buildTarget": "RestyleUp:build:development"
+              "buildTarget": "RestyleUp:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

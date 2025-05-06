@@ -7,7 +7,6 @@ import { HomeComponent } from './components/home/home.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LoginComponent } from './components/login/login.component';
-import { SignupComponent } from './components/signup/signup.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { WomenComponent } from './components/women/women.component';
 import { MenComponent } from './components/men/men.component';
@@ -25,7 +24,6 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
     HeaderComponent,
     FooterComponent,
     LoginComponent,
-    SignupComponent,
     WomenComponent,
     MenComponent,
     AccessoriesComponent,

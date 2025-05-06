@@ -1,22 +1,27 @@
+// src/app/services/auth.service.ts
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
+export interface RegisterModel {
+  username: string;
+  email: string;
+  password: string;
+  role?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private baseUrl = 'https://localhost:7249/api/auth'; // Adapté à ta config
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 
-  isLoggedIn(): boolean {
-    // Simule la vérification : tu peux adapter selon ton système d'authentification réel
-    return !!localStorage.getItem('userToken'); // par exemple, tu stockes un token à la connexion
+  register(user: RegisterModel) {
+    return this.http.post(`${this.baseUrl}/register`, user);
   }
 
-  login(token: string): void {
-    localStorage.setItem('userToken', token);
-  }
-
-  logout(): void {
-    localStorage.removeItem('userToken');
+  login(credentials: { username: string; password: string }) {
+    return this.http.post(`${this.baseUrl}/login`, credentials);
   }
 }
