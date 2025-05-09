@@ -30,7 +30,7 @@ namespace ReStyleUp.Services
             return _mapper.Map<CommandeReadDto>(commande);
         }
 
-        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(int utilisateurId)
+        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(Guid utilisateurId)
         {
             var commandes = _context.Commandes
                                     .Where(c => c.UtilisateurId == utilisateurId) // Filtrer par UtilisateurId
@@ -42,6 +42,12 @@ namespace ReStyleUp.Services
 
         public void AddCommande(CommandeCreateDto commandeDto)
         {
+            // Verify user exists first
+            if (!_context.Utilisateurs.Any(u => u.Id == commandeDto.UtilisateurId))
+            {
+                throw new ArgumentException($"User with ID {commandeDto.UtilisateurId} not found");
+            }
+
             var commande = _mapper.Map<Commande>(commandeDto);
             _context.Commandes.Add(commande);
             _context.SaveChanges();

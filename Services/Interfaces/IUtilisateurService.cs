@@ -1,22 +1,30 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ReStyleUp.DTOs.Utilisateur;
-using ReStyleUp.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ReStyleUp.Services.Interfaces
 {
     public interface IUtilisateurService
     {
-       public IEnumerable<IdentityUser> GetUsersList();
-/*        public IEnumerable<UtilisateurReadDto> GetAllUtilisateurs();
-*/        public UtilisateurReadDto GetUtilisateurById(int id);
-        public IEnumerable<UtilisateurReadDto> GetUtilisateurByNom(string nom);
-        public IEnumerable<UtilisateurReadDto> GetUtilisateurByEmail(string email);
-        public IEnumerable<UtilisateurReadDto> GetUtilisateurByAdresse(string address);
-        public IEnumerable<UtilisateurReadDto> GetUtilisateurByTelephone(string telephone);
-        public IEnumerable<UtilisateurReadDto> GetUtilisateurByCommandeId(int commandeId);
-        public IEnumerable<UtilisateurReadDto> GetUtilisateurByAnnonceId(int annonceId);
-        UtilisateurReadDto AddUtilisateur(UtilisateurCreateDto utilisateurCreateDto);
-        void UpdateUtilisateur(int id, UtilisateurUpdateDto utilisateur);
-        public void DeleteUtilisateur(int id);
+        IEnumerable<IdentityUser> GetUsersList();
+
+        // New methods for GUID ID-based operations
+        Task<UtilisateurReadDto> GetIdentityUserById(string id);
+        Task<UtilisateurReadDto> AddUtilisateurForIdentityUser(string identityUserId, UtilisateurCreateDto dto);
+        Task UpdateUtilisateur(string id, UtilisateurUpdateDto utilisateurUpdateDto);
+        Task DeleteUtilisateur(string id);
+
+        // Legacy methods for integer ID-based operations
+        UtilisateurReadDto GetUtilisateurById(int id);
+        UtilisateurReadDto AddUtilisateur(UtilisateurCreateDto dto);
+
+        // Query methods
+        IEnumerable<UtilisateurReadDto> GetUtilisateurByNom(string nom);
+        IEnumerable<UtilisateurReadDto> GetUtilisateurByEmail(string email);
+        IEnumerable<UtilisateurReadDto> GetUtilisateurByAdresse(string address);
+        IEnumerable<UtilisateurReadDto> GetUtilisateurByTelephone(string telephone);
+        IEnumerable<UtilisateurReadDto> GetUtilisateurByCommandeId(int commandeId);
+        IEnumerable<UtilisateurReadDto> GetUtilisateurByAnnonceId(int annonceId);
     }
 }

@@ -7,7 +7,7 @@ namespace ReStyleUp.Services.Interfaces
     {
         public IEnumerable<CommandeReadDto> GetAllCommandes();
         public CommandeReadDto GetCommandeById(int id);
-        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(int utilisateurId);
+        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(Guid utilisateurId);
         public void AddCommande(CommandeCreateDto commande);
         public void UpdateCommande(int id, CommandeUpdateDto commandeDto);
         public void DeleteCommande(int id);

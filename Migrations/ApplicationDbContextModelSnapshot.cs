@@ -244,8 +244,8 @@ namespace ReStyleUp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UtilisateurId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("UtilisateurId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -300,8 +300,8 @@ namespace ReStyleUp.Migrations
                     b.Property<float>("MontantTotal")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("UtilisateurId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("UtilisateurId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -330,31 +330,22 @@ namespace ReStyleUp.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("Utilisateur", b =>
+            modelBuilder.Entity("ReStyleUp.Models.Utilisateur", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Adresse")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("AnnonceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("AnnonceId1")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CommandeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CommandeId1")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("LegacyId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("MotDePasse")
                         .IsRequired()
@@ -369,10 +360,6 @@ namespace ReStyleUp.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AnnonceId1");
-
-                    b.HasIndex("CommandeId1");
 
                     b.ToTable("Utilisateurs");
                 });
@@ -445,7 +432,7 @@ namespace ReStyleUp.Migrations
 
             modelBuilder.Entity("ReStyleUp.Models.Annonce", b =>
                 {
-                    b.HasOne("Utilisateur", "Utilisateur")
+                    b.HasOne("ReStyleUp.Models.Utilisateur", "Utilisateur")
                         .WithMany("Annonces")
                         .HasForeignKey("UtilisateurId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -467,7 +454,7 @@ namespace ReStyleUp.Migrations
 
             modelBuilder.Entity("ReStyleUp.Models.Commande", b =>
                 {
-                    b.HasOne("Utilisateur", "Utilisateur")
+                    b.HasOne("ReStyleUp.Models.Utilisateur", "Utilisateur")
                         .WithMany("Commandes")
                         .HasForeignKey("UtilisateurId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -485,21 +472,6 @@ namespace ReStyleUp.Migrations
                     b.Navigation("Annonce");
                 });
 
-            modelBuilder.Entity("Utilisateur", b =>
-                {
-                    b.HasOne("ReStyleUp.Models.Annonce", "Annonce")
-                        .WithMany()
-                        .HasForeignKey("AnnonceId1");
-
-                    b.HasOne("ReStyleUp.Models.Commande", "Commande")
-                        .WithMany()
-                        .HasForeignKey("CommandeId1");
-
-                    b.Navigation("Annonce");
-
-                    b.Navigation("Commande");
-                });
-
             modelBuilder.Entity("ReStyleUp.Models.Annonce", b =>
                 {
                     b.Navigation("Articles")
@@ -508,7 +480,7 @@ namespace ReStyleUp.Migrations
                     b.Navigation("Images");
                 });
 
-            modelBuilder.Entity("Utilisateur", b =>
+            modelBuilder.Entity("ReStyleUp.Models.Utilisateur", b =>
                 {
                     b.Navigation("Annonces");
 

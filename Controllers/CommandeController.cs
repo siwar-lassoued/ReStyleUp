@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReStyleUp.DTOs.Commande;
 using ReStyleUp.Services.Interfaces;
 
@@ -6,6 +7,8 @@ namespace ReStyleUp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+
     public class CommandeController : ControllerBase
     {
         private readonly ICommandeService _commandeService;
@@ -36,6 +39,7 @@ namespace ReStyleUp.Controllers
 
         // POST: api/Commande
         [HttpPost]
+        [Authorize(Roles = "User")]
         public IActionResult AddCommande([FromBody] CommandeCreateDto commandeCreateDto)
         {
             _commandeService.AddCommande(commandeCreateDto);
@@ -44,6 +48,7 @@ namespace ReStyleUp.Controllers
 
         // PUT: api/Commande/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,User")]
         public IActionResult UpdateCommande(int id, [FromBody] CommandeUpdateDto commandeUpdateDto)
         {
             _commandeService.UpdateCommande(id, commandeUpdateDto);
@@ -54,6 +59,7 @@ namespace ReStyleUp.Controllers
 
         // DELETE: api/Commande/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteCommande(int id)
         {
             _commandeService.DeleteCommande(id);

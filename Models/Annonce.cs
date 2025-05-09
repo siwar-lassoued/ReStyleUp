@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ReStyleUp.Models
@@ -12,8 +13,9 @@ namespace ReStyleUp.Models
         public DateTime DatePublication { get; set; }
 
         [ForeignKey("Utilisateur")]
-        public int UtilisateurId { get; set; } // Doit correspondre à un ID existant dans Utilisateurs
-        public Utilisateur Utilisateur { get; set; }
+        public Guid UtilisateurId { get; set; }
+        public Utilisateur? Utilisateur { get; set; }
+
         public Article Articles { get; set; } 
         public ICollection<Image> Images { get; set; } = new List<Image>();
     }

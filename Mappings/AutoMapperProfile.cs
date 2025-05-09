@@ -70,8 +70,9 @@ namespace ReStyleUp.Mappings
 
             // Mappage entre Utilisateur et UtilisateurReadDto
             CreateMap<Utilisateur, UtilisateurReadDto>()
-                .ForMember(dest => dest.CommandeIds, opt => opt.MapFrom(src => src.Commandes.Select(c => c.Id).ToList()))
-                .ForMember(dest => dest.AnnonceIds, opt => opt.MapFrom(src => src.Annonces.Select(a => a.Id).ToList()));
+     .ForMember(dest => dest.CommandeIds,
+                opt => opt.MapFrom(src => src.Commandes.Select(c => c.Id)));
+
 
             // Mappage entre UtilisateurCreateDto et Utilisateur
             CreateMap<UtilisateurCreateDto, Utilisateur>();

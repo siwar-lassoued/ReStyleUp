@@ -1,20 +1,33 @@
-﻿using ReStyleUp.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class Utilisateur
+namespace ReStyleUp.Models
 {
-    public int Id { get; set; }
-    public string Nom { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string MotDePasse { get; set; } = string.Empty;
-    public string Adresse { get; set; } = string.Empty;
-    public string Telephone { get; set; } = string.Empty;
+    public class Utilisateur
+    {
+        [Key]
+        public Guid Id { get; set; }
 
-    // Rendez ces propriétés nullable
-    public int? CommandeId { get; set; }
-    public Commande? Commande { get; set; }
-    public int? AnnonceId { get; set; }
-    public Annonce? Annonce { get; set; }
+        // Add the LegacyId property for the old integer ID system
+        public int? LegacyId { get; set; }
 
-    public ICollection<Commande> Commandes { get; set; } = new List<Commande>();
-    public ICollection<Annonce> Annonces { get; set; } = new List<Annonce>();
+        [Required]
+        public string Nom { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        public string MotDePasse { get; set; }
+
+        public string Adresse { get; set; }
+
+        public string Telephone { get; set; }
+
+        // Navigation properties
+        public ICollection<Commande> Commandes { get; set; }
+        public ICollection<Annonce> Annonces { get; set; }
+    }
 }

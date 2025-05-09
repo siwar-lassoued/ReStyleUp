@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReStyleUp.DTOs.Article;
 using ReStyleUp.Services;
 using ReStyleUp.Services.Interfaces;
@@ -7,6 +9,7 @@ namespace ReStyleUp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class ArticlesController : ControllerBase
     {
         private readonly IArticleService _articleService;
@@ -18,6 +21,7 @@ namespace ReStyleUp.Controllers
 
         // GET: api/Articles
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<ArticleReadDto>> GetAllArticles()
         {
             var articles = _articleService.GetAllArticles();
@@ -26,6 +30,7 @@ namespace ReStyleUp.Controllers
 
         // GET: api/Articles/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<ArticleReadDto> GetArticleById(int id)
         {
             var article = _articleService.GetArticleById(id);
@@ -37,6 +42,7 @@ namespace ReStyleUp.Controllers
 
         // GET: api/Articles/annonce/3
         [HttpGet("annonce/{annonceId}")]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<ArticleReadDto>> GetArticlesByAnnonceId(int annonceId)
         {
             var articles = _articleService.GetArticlesByAnnonceId(annonceId);
@@ -45,6 +51,7 @@ namespace ReStyleUp.Controllers
 
         // POST: api/Articles
         [HttpPost]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult AddArticle([FromBody] ArticleCreateDto articleCreateDto)
         {
             _articleService.AddArticle(articleCreateDto);
@@ -53,6 +60,8 @@ namespace ReStyleUp.Controllers
 
         // PUT: api/Articles/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "User,Admin")]
+
         public IActionResult UpdateArticle(int id, [FromBody] ArticleUpdateDto articleUpdateDto)
         {
             _articleService.UpdateArticle(id, articleUpdateDto);
@@ -63,6 +72,8 @@ namespace ReStyleUp.Controllers
 
         // DELETE: api/Articles/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+
         public IActionResult DeleteArticle(int id)
         {
             _articleService.DeleteArticle(id);

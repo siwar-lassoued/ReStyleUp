@@ -7,8 +7,8 @@
         public string Description { get; set; } = string.Empty;
         public float Prix { get; set; }
         public DateTime DatePublication { get; set; }
-        public int UtilisateurId { get; set; }
-        public string UtilisateurNom { get; set; } = string.Empty;
+        public Guid UtilisateurId { get; set; }
+        public string? UtilisateurNom { get; set; }
         public List<string> ImagesUrls { get; set; } = new();
     }
 }

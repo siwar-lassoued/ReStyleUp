@@ -126,14 +126,25 @@ namespace ReStyleUp.Controllers
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_jwtBearerTokenSettings.SecretKey);
+
+                var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id), // ✅ Ajout de l'ID ici
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email)
+    };
+
+                // ➕ Ajout des rôles de l'utilisateur
+                var roles = _userManager.GetRolesAsync(user).Result;
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
-                    }),
-                    Expires = DateTime.UtcNow.AddMinutes(_jwtBearerTokenSettings.ExpireTimeInSeconds),  // You can modify expiry time here
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.UtcNow.AddMinutes(_jwtBearerTokenSettings.ExpireTimeInSeconds),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                     Audience = _jwtBearerTokenSettings.Audience,
                     Issuer = _jwtBearerTokenSettings.Issuer
@@ -142,6 +153,8 @@ namespace ReStyleUp.Controllers
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 return tokenHandler.WriteToken(token);
             }
+
+
         }
     }
 }

@@ -1,11 +1,17 @@
-﻿namespace ReStyleUp.DTOs.Annonce
+﻿using System.ComponentModel.DataAnnotations;
+using ReStyleUp.Models;
+
+namespace ReStyleUp.DTOs.Annonce
 {
     public class AnnonceCreateDto
     {
+        [Required]
         public string Titre { get; set; } = string.Empty;
+        [Required]
         public string Description { get; set; } = string.Empty;
+        [Required]
         public float Prix { get; set; }
-        public int UtilisateurId { get; set; }
-        // Les images et articles peuvent être ajoutés ensuite via d'autres endpoints
+        [Required]
+        public Guid UtilisateurId { get; set; }
     }
 }

@@ -5,11 +5,14 @@ using Swashbuckle.AspNetCore.Annotations;
 using ReStyleUp.Models;
 using ReStyleUp.DTOs.Annonce;
 using ReStyleUp.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReStyleUp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+
     public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
@@ -23,6 +26,7 @@ namespace ReStyleUp.Controllers
 
         [HttpPost("upload")]
         [Consumes("multipart/form-data")]
+        [Authorize(Roles = "User")]
         [SwaggerOperation(Summary = "Upload une image", Description = "Téléverse une image avec option pour l'associer à une annonce")]
         public async Task<IActionResult> UploadImage([FromForm] UploadImageDto model)
         {
@@ -76,15 +80,18 @@ namespace ReStyleUp.Controllers
                 });
             }
         }
-            // GET: api/Image
-            [HttpGet]
-         public ActionResult<IEnumerable<ImageReadDto>> GetAllImages()
+        // GET: api/Image
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult<IEnumerable<ImageReadDto>> GetAllImages()
         {
             var images = _imageService.GetAllImages();
             return Ok(images);
         }
         // PUT: api/Image/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "User")]
+
         public IActionResult UpdateImage(int id, [FromBody] ImageUpdateDto imageUpdateDto)
         {
             _imageService.UpdateImage(id, imageUpdateDto);
@@ -94,10 +101,11 @@ namespace ReStyleUp.Controllers
         }
         // DELETE: api/Image/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult DeleteImage(int id)
         {
             _imageService.DeleteImage(id);
-            return Ok(new { message = "Image supprimée avec succès"});
+            return Ok(new { message = "Image supprimée avec succès" });
         }
     }
 }

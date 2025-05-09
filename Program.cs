@@ -69,20 +69,41 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddControllers();
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    // Ajoute la doc de base
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReStyleUp API", Version = "v1" });
+
+    // Ajoute la s?curit? JWT
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Version = "v1",
-        Title = "ReStyle-Up API",
-        Description = "API pour la gestion des images, utilisateurs, articles..."
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Entrez 'Bearer' suivi d?un espace et de votre token JWT.\n\nExemple : `Bearer eyJhbGciOi...`"
     });
 
-    options.SupportNonNullableReferenceTypes();
-    options.EnableAnnotations(); // Pour que [SwaggerOperation] fonctionne
-    options.OperationFilter<SwaggerFileOperationFilter>(); // Pour gérer les fichiers
-});
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 
+    c.SupportNonNullableReferenceTypes();
+    c.EnableAnnotations(); // Pour que [SwaggerOperation] fonctionne
+    c.OperationFilter<SwaggerFileOperationFilter>(); // Pour g?rer les fichiers
+});
 
 
 // Services

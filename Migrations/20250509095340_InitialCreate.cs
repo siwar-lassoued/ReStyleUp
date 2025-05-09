@@ -51,6 +51,23 @@ namespace ReStyleUp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Utilisateurs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    LegacyId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Nom = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    MotDePasse = table.Column<string>(type: "TEXT", nullable: false),
+                    Adresse = table.Column<string>(type: "TEXT", nullable: false),
+                    Telephone = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Utilisateurs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -166,11 +183,38 @@ namespace ReStyleUp.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Prix = table.Column<float>(type: "REAL", nullable: false),
                     DatePublication = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UtilisateurId = table.Column<int>(type: "INTEGER", nullable: false)
+                    UtilisateurId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Annonces", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Annonces_Utilisateurs_UtilisateurId",
+                        column: x => x.UtilisateurId,
+                        principalTable: "Utilisateurs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Commandes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DateCommande = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    MontantTotal = table.Column<float>(type: "REAL", nullable: false),
+                    UtilisateurId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Commandes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Commandes_Utilisateurs_UtilisateurId",
+                        column: x => x.UtilisateurId,
+                        principalTable: "Utilisateurs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -232,52 +276,12 @@ namespace ReStyleUp.Migrations
                         principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Commandes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DateCommande = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    MontantTotal = table.Column<float>(type: "REAL", nullable: false),
-                    UtilisateurId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Commandes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Utilisateurs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Nom = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    MotDePasse = table.Column<string>(type: "TEXT", nullable: false),
-                    Adresse = table.Column<string>(type: "TEXT", nullable: false),
-                    Telephone = table.Column<string>(type: "TEXT", nullable: false),
-                    CommandeId = table.Column<int>(type: "INTEGER", nullable: true),
-                    CommandeId1 = table.Column<int>(type: "INTEGER", nullable: true),
-                    AnnonceId = table.Column<int>(type: "INTEGER", nullable: true),
-                    AnnonceId1 = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Utilisateurs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Utilisateurs_Annonces_AnnonceId1",
-                        column: x => x.AnnonceId1,
-                        principalTable: "Annonces",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Utilisateurs_Commandes_CommandeId1",
-                        column: x => x.CommandeId1,
+                        name: "FK_ArticleCommande_Commandes_CommandesId",
+                        column: x => x.CommandesId,
                         principalTable: "Commandes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -342,53 +346,11 @@ namespace ReStyleUp.Migrations
                 name: "IX_Images_AnnonceId",
                 table: "Images",
                 column: "AnnonceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Utilisateurs_AnnonceId1",
-                table: "Utilisateurs",
-                column: "AnnonceId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Utilisateurs_CommandeId1",
-                table: "Utilisateurs",
-                column: "CommandeId1");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Annonces_Utilisateurs_UtilisateurId",
-                table: "Annonces",
-                column: "UtilisateurId",
-                principalTable: "Utilisateurs",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ArticleCommande_Commandes_CommandesId",
-                table: "ArticleCommande",
-                column: "CommandesId",
-                principalTable: "Commandes",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Commandes_Utilisateurs_UtilisateurId",
-                table: "Commandes",
-                column: "UtilisateurId",
-                principalTable: "Utilisateurs",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Annonces_Utilisateurs_UtilisateurId",
-                table: "Annonces");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Commandes_Utilisateurs_UtilisateurId",
-                table: "Commandes");
-
             migrationBuilder.DropTable(
                 name: "ArticleCommande");
 
@@ -414,19 +376,19 @@ namespace ReStyleUp.Migrations
                 name: "Articles");
 
             migrationBuilder.DropTable(
+                name: "Commandes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Utilisateurs");
-
-            migrationBuilder.DropTable(
                 name: "Annonces");
 
             migrationBuilder.DropTable(
-                name: "Commandes");
+                name: "Utilisateurs");
         }
     }
 }
