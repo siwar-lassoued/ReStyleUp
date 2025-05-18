@@ -12,6 +12,6 @@ namespace ReStyleUp.DTOs.Annonce
         [Required]
         public float Prix { get; set; }
         [Required]
-        public Guid UtilisateurId { get; set; }
+        public string UtilisateurId { get; set; }
     }
 }

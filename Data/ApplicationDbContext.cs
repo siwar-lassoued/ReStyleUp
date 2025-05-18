@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ReStyleUp.Models;
 namespace ReStyleUp.Data
 {
-    
+
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -28,15 +28,18 @@ namespace ReStyleUp.Data
 
             // Configure Annonce to Utilisateur relationship (one-to-many)
             modelBuilder.Entity<Annonce>()
-                .HasOne(a => a.Utilisateur)
-                .WithMany(u => u.Annonces)  // This assumes Utilisateur has an Annonces collection property
-                .HasForeignKey(a => a.UtilisateurId);
+                .HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(a => a.UtilisateurId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configure Commande to Utilisateur relationship (one-to-many)
             modelBuilder.Entity<Commande>()
-                .HasOne(c => c.Utilisateur)
-                .WithMany(u => u.Commandes)  // This assumes Utilisateur has a Commandes collection property
-                .HasForeignKey(c => c.UtilisateurId);
+                .HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(c => c.UtilisateurId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

@@ -16,7 +16,7 @@ namespace ReStyleUp.Mappings
         {
             // Mappage entre Annonce et AnnonceReadDto
             CreateMap<Annonce, AnnonceReadDto>()
-                .ForMember(dest => dest.UtilisateurNom, opt => opt.MapFrom(src => src.Utilisateur.Nom))
+                .ForMember(dest => dest.UtilisateurNom, opt => opt.MapFrom(src => src.Utilisateur.UserName))
                 .ForMember(dest => dest.ImagesUrls, opt => opt.MapFrom(src => src.Images.Select(i => i.Url).ToList()));
 
             // Mappage entre AnnonceCreateDto et Annonce
@@ -45,7 +45,6 @@ namespace ReStyleUp.Mappings
 
             // Mappage entre CommandeReadDto et Commande
             CreateMap<Commande, CommandeReadDto>()
-                .ForMember(dest => dest.UtilisateurNom, opt => opt.MapFrom(src => src.Utilisateur.Nom))
                 .ForMember(dest => dest.ArticlesIds, opt => opt.MapFrom(src => src.Articles.Select(a => a.Id).ToList()));
             
             // Mappage entre CommandeCreateDto et Commande

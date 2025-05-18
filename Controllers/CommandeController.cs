@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ReStyleUp.Data;
 using ReStyleUp.DTOs.Commande;
+using ReStyleUp.Models;
+using ReStyleUp.Services;
 using ReStyleUp.Services.Interfaces;
 
 namespace ReStyleUp.Controllers
@@ -12,18 +17,34 @@ namespace ReStyleUp.Controllers
     public class CommandeController : ControllerBase
     {
         private readonly ICommandeService _commandeService;
+        private readonly ILogger<CommandeController> _logger;
 
-        public CommandeController(ICommandeService commandeService)
+
+        public CommandeController(ICommandeService commandeService, ILogger<CommandeController> logger)
         {
             _commandeService = commandeService;
+            _logger = logger;
         }
 
         // GET: api/Commande
         [HttpGet]
+        [Authorize(Roles = "Admin,User")]
+
         public ActionResult<IEnumerable<CommandeReadDto>> GetAllCommandes()
         {
-            var commandes = _commandeService.GetAllCommandes();
-            return Ok(commandes);
+            
+
+            try
+            {
+                _logger.LogInformation("Récupération de toutes les commandes");
+                var commandes = _commandeService.GetAllCommandes();
+                return Ok(commandes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la récupération de toutes les commandes");
+                return StatusCode(500, "Erreur lors de la récupération des commandes");
+            }
         }
 
         // GET: api/Commande/5
@@ -40,10 +61,58 @@ namespace ReStyleUp.Controllers
         // POST: api/Commande
         [HttpPost]
         [Authorize(Roles = "User")]
-        public IActionResult AddCommande([FromBody] CommandeCreateDto commandeCreateDto)
+      
+        public async Task<IActionResult> AddCommande([FromBody] CommandeCreateDto commandeCreateDto)
         {
-            _commandeService.AddCommande(commandeCreateDto);
-            return Ok(new { message = "Commande créée avec succès." });
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("Modèle invalide lors de la création d'une commande");
+                    return BadRequest(ModelState);
+                }
+
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _logger.LogInformation($"Utilisateur courant: {currentUserId}");
+
+                bool isAdmin = User.IsInRole("Admin");
+                bool isCurrentUser = currentUserId == commandeCreateDto.UtilisateurId.ToString();
+
+                if (!isAdmin && !isCurrentUser)
+                {
+                    _logger.LogWarning($"L'utilisateur {currentUserId} a essayé de créer une commande " +
+                                     $"pour un autre utilisateur {commandeCreateDto.UtilisateurId}");
+                    return Forbid("Vous ne pouvez pas créer une commande pour un autre utilisateur");
+                }
+
+                // ✅ Appel au service pour créer la commande
+                var newCommandeId = await _commandeService.AddCommande(commandeCreateDto);
+
+                _logger.LogInformation($"Commande créée avec succès, ID: {newCommandeId}");
+
+                return CreatedAtAction(nameof(GetCommandeById), new { id = newCommandeId }, null);
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogWarning(ex, "Argument null lors de la création d'une commande");
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Argument invalide lors de la création d'une commande");
+                return BadRequest(ex.Message);
+            }
+            catch (ApplicationException ex)
+            {
+                _logger.LogError(ex, "Erreur applicative lors de la création d'une commande");
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur inattendue lors de la création d'une commande");
+                return StatusCode(500, "Une erreur inattendue est survenue lors de la création de la commande. " +
+                                      "Veuillez contacter l'administrateur système.");
+            }
         }
 
         // PUT: api/Commande/5

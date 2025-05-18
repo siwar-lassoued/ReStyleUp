@@ -244,12 +244,23 @@ namespace ReStyleUp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UtilisateurId")
+                    b.Property<string>("UtilisateurId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UtilisateurId1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UtilisateurId2")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UtilisateurId");
+
+                    b.HasIndex("UtilisateurId1");
+
+                    b.HasIndex("UtilisateurId2");
 
                     b.ToTable("Annonces");
                 });
@@ -300,12 +311,23 @@ namespace ReStyleUp.Migrations
                     b.Property<float>("MontantTotal")
                         .HasColumnType("REAL");
 
-                    b.Property<Guid>("UtilisateurId")
+                    b.Property<string>("UtilisateurId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UtilisateurId1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UtilisateurId2")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UtilisateurId");
+
+                    b.HasIndex("UtilisateurId1");
+
+                    b.HasIndex("UtilisateurId2");
 
                     b.ToTable("Commandes");
                 });
@@ -432,11 +454,19 @@ namespace ReStyleUp.Migrations
 
             modelBuilder.Entity("ReStyleUp.Models.Annonce", b =>
                 {
-                    b.HasOne("ReStyleUp.Models.Utilisateur", "Utilisateur")
-                        .WithMany("Annonces")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
                         .HasForeignKey("UtilisateurId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("ReStyleUp.Models.Utilisateur", null)
+                        .WithMany("Annonces")
+                        .HasForeignKey("UtilisateurId1");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Utilisateur")
+                        .WithMany()
+                        .HasForeignKey("UtilisateurId2");
 
                     b.Navigation("Utilisateur");
                 });
@@ -454,11 +484,19 @@ namespace ReStyleUp.Migrations
 
             modelBuilder.Entity("ReStyleUp.Models.Commande", b =>
                 {
-                    b.HasOne("ReStyleUp.Models.Utilisateur", "Utilisateur")
-                        .WithMany("Commandes")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
                         .HasForeignKey("UtilisateurId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("ReStyleUp.Models.Utilisateur", null)
+                        .WithMany("Commandes")
+                        .HasForeignKey("UtilisateurId1");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Utilisateur")
+                        .WithMany()
+                        .HasForeignKey("UtilisateurId2");
 
                     b.Navigation("Utilisateur");
                 });

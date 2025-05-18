@@ -5,11 +5,11 @@ namespace ReStyleUp.Services.Interfaces
 {
     public interface ICommandeService
     {
-        public IEnumerable<CommandeReadDto> GetAllCommandes();
-        public CommandeReadDto GetCommandeById(int id);
-        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(Guid utilisateurId);
-        public void AddCommande(CommandeCreateDto commande);
-        public void UpdateCommande(int id, CommandeUpdateDto commandeDto);
-        public void DeleteCommande(int id);
+        IEnumerable<CommandeReadDto> GetAllCommandes();
+        CommandeReadDto GetCommandeById(int id);
+        IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(string utilisateurId);
+        Task<int> AddCommande(CommandeCreateDto commande);
+        void UpdateCommande(int id, CommandeUpdateDto commandeDto);
+        void DeleteCommande(int id);
     }
 }

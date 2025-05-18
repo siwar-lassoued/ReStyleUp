@@ -8,8 +8,8 @@ namespace ReStyleUp.Services.Interfaces
     {
         IEnumerable<AnnonceReadDto> GetAllAnnonces();
         AnnonceReadDto GetAnnonceById(int id);
-        IEnumerable<AnnonceReadDto> GetAnnoncesByUtilisateurId(Guid utilisateurId);
-        int AddAnnonce(AnnonceCreateDto annonceCreateDto);
+        IEnumerable<AnnonceReadDto> GetAnnoncesByUtilisateurId(string utilisateurId);
+        Task<int> AddAnnonce(AnnonceCreateDto annonceCreateDto); 
         void UpdateAnnonce(int id, AnnonceUpdateDto annonceUpdateDto);
         void DeleteAnnonce(int id);
     }

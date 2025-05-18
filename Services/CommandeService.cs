@@ -4,6 +4,8 @@ using ReStyleUp.Models;
 using ReStyleUp.Services.Interfaces;
 using ReStyleUp.DTOs.Commande;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using ReStyleUp.DTOs.Annonce;
 
 namespace ReStyleUp.Services
 {
@@ -11,11 +13,19 @@ namespace ReStyleUp.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<CommandeService> _logger;
 
-        public CommandeService(ApplicationDbContext context, IMapper mapper)
+
+
+        public CommandeService(ApplicationDbContext context, IMapper mapper, UserManager<IdentityUser> userManager,
+            ILogger<CommandeService> logger)
         {
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
+            _logger = logger;
+
         }
 
         public IEnumerable<CommandeReadDto> GetAllCommandes()
@@ -30,7 +40,7 @@ namespace ReStyleUp.Services
             return _mapper.Map<CommandeReadDto>(commande);
         }
 
-        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(Guid utilisateurId)
+        public IEnumerable<CommandeReadDto> GetCommandesByUtilisateurId(string utilisateurId)
         {
             var commandes = _context.Commandes
                                     .Where(c => c.UtilisateurId == utilisateurId) // Filtrer par UtilisateurId
@@ -40,18 +50,38 @@ namespace ReStyleUp.Services
             return _mapper.Map<IEnumerable<CommandeReadDto>>(commandes);
         }
 
-        public void AddCommande(CommandeCreateDto commandeDto)
+        public async Task<int> AddCommande(CommandeCreateDto commandeDto)
         {
-            // Verify user exists first
-            if (!_context.Utilisateurs.Any(u => u.Id == commandeDto.UtilisateurId))
+            var utilisateurId = commandeDto.UtilisateurId;
+            _logger.LogInformation($"Recherche de l'utilisateur avec l'ID {utilisateurId}");
+
+            var identityUser = await _userManager.FindByIdAsync(utilisateurId);
+            if (identityUser == null)
             {
-                throw new ArgumentException($"User with ID {commandeDto.UtilisateurId} not found");
+                _logger.LogWarning($"L'utilisateur avec l'ID {utilisateurId} n'existe pas dans IdentityUsers");
+                throw new ArgumentException($"L'utilisateur avec l'ID {utilisateurId} n'existe pas");
             }
 
+            _logger.LogInformation($"Utilisateur Identity trouvé: {identityUser.UserName}");
+
+            // Récupérer les articles associés
+            var articles = _context.Articles
+                                   .Where(a => commandeDto.ArticlesIds.Contains(a.Id))
+                                   .ToList();
+
+            // Calculer le montant total
+            float montantTotal = articles.Sum(a => a.Prix);
+
             var commande = _mapper.Map<Commande>(commandeDto);
+            commande.MontantTotal = montantTotal; // Set the total price
+
             _context.Commandes.Add(commande);
             _context.SaveChanges();
+
+            return commande.Id;
         }
+
+
 
         public void UpdateCommande(int id, CommandeUpdateDto commandeDto)
         {

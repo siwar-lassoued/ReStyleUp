@@ -127,7 +127,7 @@ namespace ReStyleUp.Services
             if (commande == null || commande.Utilisateur == null)
                 return new List<UtilisateurReadDto>();
 
-            var utilisateur = new List<Utilisateur> { commande.Utilisateur };
+            var utilisateur = new List<IdentityUser> { commande.Utilisateur };
             return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateur);
         }
 
@@ -140,7 +140,7 @@ namespace ReStyleUp.Services
             if (annonce == null || annonce.Utilisateur == null)
                 return new List<UtilisateurReadDto>();
 
-            var utilisateur = new List<Utilisateur> { annonce.Utilisateur };
+            var utilisateur = new List<IdentityUser> { annonce.Utilisateur };
             return _mapper.Map<IEnumerable<UtilisateurReadDto>>(utilisateur);
         }
 

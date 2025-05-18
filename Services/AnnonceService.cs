@@ -62,7 +62,7 @@ namespace ReStyleUp.Services
             }
         }
 
-        public IEnumerable<AnnonceReadDto> GetAnnoncesByUtilisateurId(Guid utilisateurId)
+        public IEnumerable<AnnonceReadDto> GetAnnoncesByUtilisateurId(string utilisateurId)
         {
             try
             {
@@ -79,84 +79,79 @@ namespace ReStyleUp.Services
             }
         }
 
-        public int AddAnnonce(AnnonceCreateDto annonceCreateDto)
+        public async Task<int> AddAnnonce(AnnonceCreateDto annonceCreateDto)
         {
             try
             {
-                // Validate input
+                // Validation des données d'entrée
                 if (annonceCreateDto == null)
-                {
-                    throw new ArgumentNullException(nameof(annonceCreateDto), "Les données de l'annonce ne peuvent pas être nulles");
-                }
+                    throw new ArgumentNullException(nameof(annonceCreateDto), "Les données de l'annonce ne peuvent pas être nulles.");
 
-                // Vérifier si l'utilisateur avec le UUID existe dans la table IdentityUsers
+                if (string.IsNullOrWhiteSpace(annonceCreateDto.Titre))
+                    throw new ArgumentException("Le titre de l'annonce est requis.");
+
+                if (string.IsNullOrWhiteSpace(annonceCreateDto.Description))
+                    throw new ArgumentException("La description de l'annonce est requise.");
+
+                if (annonceCreateDto.Prix <= 0)
+                    throw new ArgumentException("Le prix de l'annonce doit être supérieur à zéro.");
+
+                // Vérifier si l'utilisateur existe dans IdentityUsers
                 var utilisateurId = annonceCreateDto.UtilisateurId;
                 _logger.LogInformation($"Recherche de l'utilisateur avec l'ID {utilisateurId}");
 
-                var identityUser = _userManager.FindByIdAsync(utilisateurId.ToString()).Result;
-
+                var identityUser = await _userManager.FindByIdAsync(utilisateurId);
                 if (identityUser == null)
                 {
                     _logger.LogWarning($"L'utilisateur avec l'ID {utilisateurId} n'existe pas dans IdentityUsers");
                     throw new ArgumentException($"L'utilisateur avec l'ID {utilisateurId} n'existe pas");
                 }
 
-                _logger.LogInformation($"Utilisateur trouvé: {identityUser.UserName}");
+                _logger.LogInformation($"Utilisateur Identity trouvé: {identityUser.UserName}");
 
-                // Vérifier si un Utilisateur existe déjà pour cet identity user, sinon le créer
-                var utilisateur = _context.Utilisateurs.FirstOrDefault(u => u.Id == utilisateurId);
-                if (utilisateur == null)
-                {
-                    _logger.LogInformation($"Création d'un nouvel utilisateur dans la table Utilisateurs pour {utilisateurId}");
-
-                    // Créer un nouvel Utilisateur basé sur les données de l'IdentityUser
-                    utilisateur = new Utilisateur
-                    {
-                        Id = Guid.Parse(identityUser.Id),
-                        Nom = identityUser.UserName ?? string.Empty,
-                        Email = identityUser.Email ?? string.Empty,
-                        // Autres champs avec des valeurs par défaut
-                        Adresse = string.Empty,
-                        Telephone = identityUser.PhoneNumber ?? string.Empty
-                    };
-
-                    _context.Utilisateurs.Add(utilisateur);
-                    _context.SaveChanges();
-                    _logger.LogInformation($"Nouvel utilisateur créé avec succès dans Utilisateurs");
-                }
-
-                // Créer l'annonce
+                // Création de l'annonce
                 var annonce = new Annonce
                 {
                     Titre = annonceCreateDto.Titre,
                     Description = annonceCreateDto.Description,
                     Prix = annonceCreateDto.Prix,
                     UtilisateurId = utilisateurId,
-                    DatePublication = DateTime.Now  
+                    DatePublication = DateTime.Now
                 };
 
-                _logger.LogInformation($"Tentative d'ajout d'une nouvelle annonce: {annonce.Titre}");
+                _logger.LogInformation($"Ajout de l'annonce : {annonce.Titre}");
 
-                // Ajouter l'annonce à la base de données
                 _context.Annonces.Add(annonce);
-                _context.SaveChanges();
 
-                _logger.LogInformation($"Annonce créée avec succès, ID: {annonce.Id}");
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Annonce créée avec succès. ID: {annonce.Id}");
+                    return annonce.Id;
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    _logger.LogError(dbEx, "Erreur lors de l'enregistrement de l'annonce.");
+                    foreach (var entry in dbEx.Entries)
+                    {
+                        _logger.LogError($"Entité en erreur : {entry.Entity.GetType().Name}, État : {entry.State}");
+                    }
 
-                // Retourner l'ID de l'annonce créée
-                return annonce.Id;
+                    throw new ApplicationException("Erreur lors de l'enregistrement de l'annonce dans la base de données", dbEx);
+                }
             }
-            catch (DbUpdateException dbEx)
+            catch (ArgumentException argEx)
             {
-                _logger.LogError(dbEx, $"Erreur de base de données lors de la création de l'annonce: {dbEx.InnerException?.Message ?? dbEx.Message}");
-                throw new ApplicationException("Erreur lors de l'enregistrement de l'annonce dans la base de données", dbEx);
+                _logger.LogWarning(argEx, "Erreur de validation des données : " + argEx.Message);
+                throw;
             }
-            catch (Exception ex) when (!(ex is ArgumentException || ex is ArgumentNullException))
+            catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erreur inattendue lors de la création de l'annonce: {ex.Message}");
+                _logger.LogError(ex, "Erreur inattendue lors de la création de l'annonce.");
                 throw new ApplicationException("Une erreur inattendue est survenue lors de la création de l'annonce", ex);
             }
         }
+
 
         public void UpdateAnnonce(int id, AnnonceUpdateDto annonceUpdateDto)
         {
