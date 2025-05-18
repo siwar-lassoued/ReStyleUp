@@ -51,9 +51,9 @@ namespace ReStyleUp.Services
         public void AddImage(ImageCreateDto imageDto)
         {
             // Si un AnnonceId est spécifié, vérifiez qu'il existe
-            if (imageDto.AnnonceId.HasValue)
+            if (imageDto.ArticleId.HasValue)
             {
-                var annonceExists = _context.Annonces.Any(a => a.Id == imageDto.AnnonceId.Value);
+                var annonceExists = _context.Annonces.Any(a => a.Id == imageDto.ArticleId.Value);
                 if (!annonceExists)
                 {
                     throw new ArgumentException("L'annonce spécifiée n'existe pas");
@@ -63,7 +63,7 @@ namespace ReStyleUp.Services
             var image = new Image
             {
                 Url = imageDto.Url,
-                AnnonceId = imageDto.AnnonceId
+                AnnonceId = imageDto.ArticleId
             };
 
             _context.Images.Add(image);

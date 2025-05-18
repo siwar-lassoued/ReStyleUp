@@ -3,7 +3,7 @@ using ReStyleUp.Services.Interfaces;
 using ReStyleUp.DTOs.Image;
 using Swashbuckle.AspNetCore.Annotations;
 using ReStyleUp.Models;
-using ReStyleUp.DTOs.Annonce;
+using ReStyleUp.DTOs.Article;
 using ReStyleUp.Services;
 using Microsoft.AspNetCore.Authorization;
 
@@ -27,7 +27,7 @@ namespace ReStyleUp.Controllers
         [HttpPost("upload")]
         [Consumes("multipart/form-data")]
         [Authorize(Roles = "User")]
-        [SwaggerOperation(Summary = "Upload une image", Description = "Téléverse une image avec option pour l'associer à une annonce")]
+        [SwaggerOperation(Summary = "Upload une image", Description = "Téléverse une image avec option pour l'associer à un article")]
         public async Task<IActionResult> UploadImage([FromForm] UploadImageDto model)
         {
             if (model.File == null || model.File.Length == 0)
@@ -56,7 +56,7 @@ namespace ReStyleUp.Controllers
             var imageDto = new ImageCreateDto
             {
                 Url = $"/uploads/{uniqueFileName}",
-                AnnonceId = model.AnnonceId
+                ArticleId = model.ArticleId
             };
 
             try
@@ -67,7 +67,7 @@ namespace ReStyleUp.Controllers
                     Url = imageDto.Url,
                     FileName = model.File.FileName,
                     Size = model.File.Length,
-                    AnnonceId = model.AnnonceId
+                    ArticleId = model.ArticleId
                 });
             }
             catch (ArgumentException ex)
@@ -76,7 +76,7 @@ namespace ReStyleUp.Controllers
                 return BadRequest(new
                 {
                     Error = ex.Message,
-                    Solution = "Soit spécifiez un AnnonceId valide, soit laissez le champ vide"
+                    Solution = "Soit spécifiez un ArticleId valide, soit laissez le champ vide"
                 });
             }
         }
