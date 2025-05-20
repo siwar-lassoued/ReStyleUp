@@ -72,6 +72,7 @@ namespace ReStyleUp.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult CreateAnnonce([FromBody] AnnonceCreateDto annonceDto)
         {
+
             try
             {
                 // Validation

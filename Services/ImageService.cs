@@ -20,13 +20,13 @@ namespace ReStyleUp.Services
 
         public IEnumerable<ImageReadDto> GetAllImages()
         {
-            var images = _context.Images.Include(i => i.Annonce).ToList();
+            var images = _context.Images.Include(i => i.Article).ToList();
             return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
 
         public ImageReadDto GetImageById(int id)
         {
-            var image = _context.Images.Include(i => i.Annonce).FirstOrDefault(i => i.Id == id);
+            var image = _context.Images.Include(i => i.Article).FirstOrDefault(i => i.Id == id);
             return _mapper.Map<ImageReadDto>(image);
         }
 
@@ -34,36 +34,36 @@ namespace ReStyleUp.Services
         {
             var images = _context.Images
                                  .Where(i => i.Url == url)
-                                 .Include(i => i.Annonce)
+                                 .Include(i => i.Article)
                                  .ToList();
             return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
 
-        public IEnumerable<ImageReadDto> GetImageByAnnonceId(int annonceId)
+        public IEnumerable<ImageReadDto> GetImageByArticleId(int articleId)
         {
             var images = _context.Images
-                                 .Where(i => i.AnnonceId == annonceId)
-                                 .Include(i => i.Annonce)
+                                 .Where(i => i.ArticleId == articleId)
+                                 .Include(i => i.Article)
                                  .ToList();
             return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
 
         public void AddImage(ImageCreateDto imageDto)
         {
-            // Si un AnnonceId est spécifié, vérifiez qu'il existe
+            // Si un ArticleId est spécifié, vérifiez qu'il existe
             if (imageDto.ArticleId.HasValue)
             {
-                var annonceExists = _context.Annonces.Any(a => a.Id == imageDto.ArticleId.Value);
-                if (!annonceExists)
+                var articleExists = _context.Articles.Any(a => a.Id == imageDto.ArticleId.Value);
+                if (!articleExists)
                 {
-                    throw new ArgumentException("L'annonce spécifiée n'existe pas");
+                    throw new ArgumentException("L'article spécifiée n'existe pas");
                 }
             }
 
             var image = new Image
             {
                 Url = imageDto.Url,
-                AnnonceId = imageDto.ArticleId
+                ArticleId = imageDto.ArticleId
             };
 
             _context.Images.Add(image);

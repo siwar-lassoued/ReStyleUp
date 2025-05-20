@@ -12,6 +12,7 @@ namespace ReStyleUp.Models
         public CategorieArticle Categorie { get; set; }
 
         public EtatArticle Etat { get; set; }
+        public string? ImageUrl { get; set; } 
 
         public int AnnonceId { get; set; }
         public Annonce Annonce { get; set; }

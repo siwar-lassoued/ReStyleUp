@@ -252,6 +252,7 @@ namespace ReStyleUp.Migrations
                     Prix = table.Column<float>(type: "REAL", nullable: false),
                     Categorie = table.Column<int>(type: "INTEGER", nullable: false),
                     Etat = table.Column<int>(type: "INTEGER", nullable: false),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: true),
                     AnnonceId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -263,25 +264,6 @@ namespace ReStyleUp.Migrations
                         principalTable: "Annonces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Url = table.Column<string>(type: "TEXT", nullable: false),
-                    AnnonceId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Images_Annonces_AnnonceId",
-                        column: x => x.AnnonceId,
-                        principalTable: "Annonces",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -306,6 +288,31 @@ namespace ReStyleUp.Migrations
                         principalTable: "Commandes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Url = table.Column<string>(type: "TEXT", nullable: false),
+                    ArticleId = table.Column<int>(type: "INTEGER", nullable: true),
+                    AnnonceId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Annonces_AnnonceId",
+                        column: x => x.AnnonceId,
+                        principalTable: "Annonces",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Images_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -390,6 +397,11 @@ namespace ReStyleUp.Migrations
                 name: "IX_Images_AnnonceId",
                 table: "Images",
                 column: "AnnonceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ArticleId",
+                table: "Images",
+                column: "ArticleId");
         }
 
         /// <inheritdoc />
@@ -417,13 +429,13 @@ namespace ReStyleUp.Migrations
                 name: "Images");
 
             migrationBuilder.DropTable(
-                name: "Articles");
-
-            migrationBuilder.DropTable(
                 name: "Commandes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Articles");
 
             migrationBuilder.DropTable(
                 name: "Annonces");

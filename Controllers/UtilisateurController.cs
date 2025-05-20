@@ -23,7 +23,8 @@ namespace ReStyleUp.Controllers
 
         // GET: api/Utilisateur
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User")]
         public ActionResult<IEnumerable<IdentityUser>> GetAllUtilisateurs()
         {
             var utilisateurs = _utilisateurService.GetUsersList();
@@ -110,7 +111,7 @@ namespace ReStyleUp.Controllers
 
                 // Note: You'll need to add an overload of DeleteUtilisateur for int IDs
                 // or convert int to string here
-                return BadRequest("Deletion using legacy IDs is not supported yet");
+                return BadRequest("Deletion usingg legacy IDs is not supported yet");
             }
 
             return BadRequest("Invalid ID format");

@@ -129,7 +129,7 @@ var app = builder.Build();
 app.UseCors("AllowAngularApp");
 
 app.UseAuthentication(); // Authentification d'abord
-app.UseAuthorization();  // Ensuite l'autorisation
+app.UseAuthorization();  // Ensuite l'autorisation.
 
 app.UseStaticFiles();
 

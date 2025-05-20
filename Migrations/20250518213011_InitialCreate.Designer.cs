@@ -11,7 +11,7 @@ using ReStyleUp.Data;
 namespace ReStyleUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250517222959_InitialCreate")]
+    [Migration("20250518213011_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -287,6 +287,9 @@ namespace ReStyleUp.Migrations
                     b.Property<int>("Etat")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Nom")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -344,6 +347,9 @@ namespace ReStyleUp.Migrations
                     b.Property<int?>("AnnonceId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("ArticleId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -351,6 +357,8 @@ namespace ReStyleUp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AnnonceId");
+
+                    b.HasIndex("ArticleId");
 
                     b.ToTable("Images");
                 });
@@ -506,11 +514,15 @@ namespace ReStyleUp.Migrations
 
             modelBuilder.Entity("ReStyleUp.Models.Image", b =>
                 {
-                    b.HasOne("ReStyleUp.Models.Annonce", "Annonce")
+                    b.HasOne("ReStyleUp.Models.Annonce", null)
                         .WithMany("Images")
                         .HasForeignKey("AnnonceId");
 
-                    b.Navigation("Annonce");
+                    b.HasOne("ReStyleUp.Models.Article", "Article")
+                        .WithMany()
+                        .HasForeignKey("ArticleId");
+
+                    b.Navigation("Article");
                 });
 
             modelBuilder.Entity("ReStyleUp.Models.Annonce", b =>
